@@ -10,7 +10,8 @@ import bootcamp.hibernate_practical.exception.BookNotFoundException;
 import bootcamp.hibernate_practical.entity.BorrowedStatus;
 import bootcamp.hibernate_practical.exception.BookStateException;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedModel;
 import java.util.List;
 
 @Service
@@ -75,6 +76,21 @@ public class BookService {
         return bookRepository.findByAuthor(author).stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+
+
+    public PagedModel<BookResponse> getBooksPage(Pageable pageable) {
+        return new PagedModel<>(bookRepository.findAll(pageable).map(this::mapToResponse));
+    }
+
+    public List<BookResponse> filterBooks(String genre, String author, Boolean available) {
+        return bookRepository.filter(blankToNull(genre), blankToNull(author), available).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    private String blankToNull(String value) {
+        return value == null || value.isBlank() ? null : value;
     }
     public List<BookResponse> searchByTitle(String text) {
         return bookRepository.findByTitleContainingIgnoreCase(text).stream()

@@ -6,7 +6,9 @@ import bootcamp.hibernate_practical.dto.UpdateBookRequest;
 import bootcamp.hibernate_practical.service.BookService;
 import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.PagedModel;
 import java.util.List;
 
 @RestController
@@ -27,6 +29,18 @@ public class BookController {
     public List<BookResponse> getAllBooks() {
 
         return bookService.getAllBooks();
+    }
+
+    @GetMapping("/page")
+    public PagedModel<BookResponse> getBooksPage(@PageableDefault(size = 5, sort = "title") Pageable pageable) {
+        return bookService.getBooksPage(pageable);
+    }
+
+    @GetMapping("/filter")
+    public List<BookResponse> filterBooks(@RequestParam(required = false) String genre,
+                                          @RequestParam(required = false) String author,
+                                          @RequestParam(required = false) Boolean available) {
+        return bookService.filterBooks(genre, author, available);
     }
 
     @GetMapping("/{id}")
