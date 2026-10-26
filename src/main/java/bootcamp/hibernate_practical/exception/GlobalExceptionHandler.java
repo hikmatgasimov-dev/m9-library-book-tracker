@@ -31,4 +31,11 @@ public class GlobalExceptionHandler {
         body.put("fields", fieldErrors);
         return ResponseEntity.badRequest().body(body);
     }
+    @ExceptionHandler(BookStateException.class)
+    public ResponseEntity<Map<String, Object>> handleState(BookStateException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("status", HttpStatus.CONFLICT.value());
+        body.put("error", ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(body);
+    }
 }

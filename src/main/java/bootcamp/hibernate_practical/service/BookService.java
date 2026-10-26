@@ -7,6 +7,9 @@ import bootcamp.hibernate_practical.entity.Book;
 import bootcamp.hibernate_practical.repository.BookRepository;
 import org.springframework.stereotype.Service;
 import bootcamp.hibernate_practical.exception.BookNotFoundException;
+import bootcamp.hibernate_practical.entity.BorrowedStatus;
+import bootcamp.hibernate_practical.exception.BookStateException;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -51,7 +54,11 @@ public class BookService {
         book.setAuthor(request.getAuthor());
         book.setGenre(request.getGenre());
         book.setPublicationYear(request.getPublicationYear());
-        book.setAvailable(request.isAvailable());
+        if (request.isAvailable()) {
+            book.markReturned();
+        } else {
+            book.markBorrowed();
+        }
         Book savedBook = bookRepository.save(book);
         return mapToResponse(savedBook);
     }
@@ -90,7 +97,27 @@ public class BookService {
               .map(this::mapToResponse).toList();
 
     }
+    @Transactional
+    public BookResponse borrowBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+        if (book.getBorrowedStatus() == BorrowedStatus.BORROWED) {
+            throw new BookStateException("Book " + id + " is already borrowed");
+        }
+        book.markBorrowed();
+        return mapToResponse(bookRepository.save(book));
+    }
 
+    @Transactional
+    public BookResponse returnBook(Long id) {
+        Book book = bookRepository.findById(id)
+                .orElseThrow(() -> new BookNotFoundException(id));
+        if (book.getBorrowedStatus() == BorrowedStatus.AVAILABLE) {
+            throw new BookStateException("Book " + id + " is not borrowed");
+        }
+        book.markReturned();
+        return mapToResponse(bookRepository.save(book));
+    }
     private BookResponse mapToResponse(Book book) {
 
         return new BookResponse(
@@ -99,7 +126,8 @@ public class BookService {
                 book.getAuthor(),
                 book.getGenre(),
                 book.getPublicationYear(),
-                book.isAvailable()
+                book.isAvailable(),
+                book.getBorrowedStatus()
         );
     }
 }

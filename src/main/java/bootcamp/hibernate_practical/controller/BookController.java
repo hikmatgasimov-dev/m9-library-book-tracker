@@ -43,7 +43,15 @@ public class BookController {
     public void deleteBook(@PathVariable Long id) {
        bookService.deleteBook(id);
     }
+    @PostMapping("/{id}/borrow")
+    public BookResponse borrowBook(@PathVariable Long id) {
+        return bookService.borrowBook(id);
+    }
 
+    @PostMapping("/{id}/return")
+    public BookResponse returnBook(@PathVariable Long id) {
+        return bookService.returnBook(id);
+    }
     @GetMapping("/author/{author}")
     public List<BookResponse> getBooksByAuthor(@PathVariable String author) {
 
