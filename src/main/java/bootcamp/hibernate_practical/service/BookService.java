@@ -6,6 +6,7 @@ import bootcamp.hibernate_practical.dto.UpdateBookRequest;
 import bootcamp.hibernate_practical.entity.Book;
 import bootcamp.hibernate_practical.repository.BookRepository;
 import org.springframework.stereotype.Service;
+import bootcamp.hibernate_practical.exception.BookNotFoundException;
 
 import java.util.List;
 
@@ -38,14 +39,14 @@ public class BookService {
     public BookResponse getBookById(Long id) {
 
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
+                .orElseThrow(() -> new BookNotFoundException(id));
         return mapToResponse(book);
 
     }
 
     public BookResponse updateBook(Long id, UpdateBookRequest request) {
         Book book = bookRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Book not found with id " + id));
+                .orElseThrow(() -> new  BookNotFoundException(id));
         book.setTitle(request.getTitle());
         book.setAuthor(request.getAuthor());
         book.setGenre(request.getGenre());
@@ -57,7 +58,7 @@ public class BookService {
 
     public void deleteBook(Long id) {
         if (!bookRepository.existsById(id)) {
-            throw new RuntimeException("Book not found with id " + id);
+            throw new  BookNotFoundException(id);
         }
         bookRepository.deleteById(id);
     }
@@ -67,6 +68,21 @@ public class BookService {
         return bookRepository.findByAuthor(author).stream()
                 .map(this::mapToResponse)
                 .toList();
+    }
+    public List<BookResponse> searchByTitle(String text) {
+        return bookRepository.findByTitleContainingIgnoreCase(text).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public List<BookResponse> findPublishedAfter(int year) {
+        return bookRepository.findByPublicationYearGreaterThan(year).stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    public long countBooks() {
+        return bookRepository.count();
     }
 
     public List<BookResponse> findAvailableBooks(){

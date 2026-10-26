@@ -4,6 +4,7 @@ import bootcamp.hibernate_practical.dto.BookResponse;
 import bootcamp.hibernate_practical.dto.CreateBookRequest;
 import bootcamp.hibernate_practical.dto.UpdateBookRequest;
 import bootcamp.hibernate_practical.service.BookService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,7 +19,7 @@ public class BookController {
     }
 
     @PostMapping
-    public BookResponse createBook(@RequestBody CreateBookRequest createBookRequest) {
+    public BookResponse createBook(@Valid @RequestBody CreateBookRequest createBookRequest) {
         return bookService.createBook(createBookRequest);
     }
 
@@ -34,7 +35,7 @@ public class BookController {
     }
 
     @PutMapping("/{id}")
-    public BookResponse updateBook(@PathVariable Long id, @RequestBody UpdateBookRequest updateBookRequest) {
+    public BookResponse updateBook(@PathVariable Long id, @Valid  @RequestBody UpdateBookRequest updateBookRequest) {
         return bookService.updateBook(id,updateBookRequest);
     }
 
@@ -53,5 +54,16 @@ public class BookController {
     public List<BookResponse> getAvailableBooks() {
         return bookService.findAvailableBooks();
     }
-
+    @GetMapping("/search")
+    public List<BookResponse> searchBookByTitle(@RequestParam String title) {
+        return bookService.searchByTitle(title);
+    }
+    @GetMapping("/published-after/{year}")
+    public List<BookResponse> getBooksPublishedAfter(@PathVariable int year) {
+        return bookService.findPublishedAfter(year);
+    }
+    @GetMapping("/count")
+    public long countBooks() {
+        return bookService.countBooks();
+    }
 }
