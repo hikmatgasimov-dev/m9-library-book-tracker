@@ -45,4 +45,11 @@ public class GlobalExceptionHandler {
         body.put("error", "Unknown sort property '" + ex.getPropertyName() + "'");
         return ResponseEntity.badRequest().body(body);
     }
+    @ExceptionHandler(ExternalApiException.class)
+    public ResponseEntity<Map<String, Object>> handleExternalApi(ExternalApiException ex) {
+        Map<String, Object> body = new LinkedHashMap<>();
+        body.put("status", ex.getStatus().value());
+        body.put("error", ex.getMessage());
+        return ResponseEntity.status(ex.getStatus()).body(body);
+    }
 }

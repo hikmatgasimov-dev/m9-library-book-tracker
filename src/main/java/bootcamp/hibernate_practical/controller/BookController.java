@@ -10,14 +10,18 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.data.web.PagedModel;
 import java.util.List;
+import bootcamp.hibernate_practical.dto.BookInfoResponse;
+import bootcamp.hibernate_practical.service.BookInfoService;
 
 @RestController
 @RequestMapping("/api/books")
 public class BookController {
     private final BookService bookService;
+    private final BookInfoService bookInfoService;
 
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService,BookInfoService bookInfoService) {
         this.bookService = bookService;
+        this.bookInfoService = bookInfoService;
     }
 
     @PostMapping
@@ -51,6 +55,10 @@ public class BookController {
     @PutMapping("/{id}")
     public BookResponse updateBook(@PathVariable Long id, @Valid  @RequestBody UpdateBookRequest updateBookRequest) {
         return bookService.updateBook(id,updateBookRequest);
+    }
+    @GetMapping("/{id}/info")
+    public BookInfoResponse getBookInfo(@PathVariable Long id) {
+        return bookInfoService.getInfo(id);
     }
 
     @DeleteMapping("/{id}")
