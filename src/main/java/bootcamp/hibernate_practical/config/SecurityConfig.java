@@ -20,7 +20,7 @@ public class SecurityConfig {
         http
                  .csrf(csrf->csrf.ignoringRequestMatchers("/api/**","/h2-console/**"))
                  .authorizeHttpRequests(auth->auth
-                         .requestMatchers("/login","/css/**").permitAll()
+                         .requestMatchers("/login", "/register", "/css/**").permitAll()
                          //REST API
                          .requestMatchers(HttpMethod.GET,"/api/**").authenticated()
                          .requestMatchers("/api/**").hasRole("ADMIN")

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Library</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<main class="card narrow">
+    <h1>Create an account</h1>
+    <form th:action="@{/register}" th:object="${registerRequest}" method="post">
+        <label>Username
+            <input type="text" th:field="*{username}" autofocus required>
+            <span class="alert error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+        </label>
+        <label>Password
+            <input type="password" th:field="*{password}" required>
+            <span class="alert error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+        </label>
+        <label>Repeat password
+            <input type="password" th:field="*{confirmPassword}" required>
+            <span class="alert error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></span>
+        </label>
+        <button type="submit">Register</button>
+    </form>
+    <p class="hint">Already have an account? <a th:href="@{/login}">Log in</a></p>
+</main>
+</body>
+</html>
