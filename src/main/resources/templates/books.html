@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Books - Library</title>
+    <link rel="stylesheet" th:href="@{/css/app.css}">
+</head>
+<body>
+<main class="card">
+    <header class="bar">
+        <h1>Library books</h1>
+        <form th:action="@{/logout}" method="post">
+            <span th:text="${username} + (${isAdmin} ?  ' (admin)' : ' (user)')"></span>
+
+            <button type="submit" class="secondary"> Log Out</button>
+        </form>
+    </header>
+
+    <p class="alert ok" th:if="${message}" th:text="${message}"></p>
+    <p class="alert error" th:if="${error}" th:text="${error}"></p>
+
+
+    <table>
+        <thead>
+        <tr><th>Title</th><th>Author</th><th>Genre</th><th>Year</th><th>Status</th><th th:if="${isAdmin}"></th></tr>
+        </thead>
+        <tbody>
+        <tr th:each="book : ${books}">
+            <td th:text="${book.title}"></td>
+            <td th:text="${book.author}"></td>
+            <td th:text="${book.genre}"></td>
+            <td th:text="${book.publicationYear}"></td>
+            <td th:text="${book.borrowedStatus}"></td>
+            <td th:if="${isAdmin}">
+                <form th:action="@{/books/{id}/delete(id=${book.id})}" method="post">
+                    <button type="submit" class="danger">Delete</button>
+                </form>
+            </td>
+        </tr>
+        <tr th:if="${#lists.isEmpty(books)}"><td colspan="6">No books yet.</td></tr>
+        </tbody>
+    </table>
+
+    <section th:if="${isAdmin}">
+        <h2>Add a book</h2>
+        <form th:action="@{/books}" method="post" class="grid">
+            <label>Title <input type="text" name="title" required></label>
+            <label>Author <input type="text" name="author" required></label>
+            <label>Genre <input type="text" name="genre"></label>
+            <label>Year <input type="number" name="publicationYear" min="1000" max="2100" required></label>
+            <button type="submit">Add book</button>
+        </form>
+    </section>
+    <p class="hint" th:unless="${isAdmin}">Only an admin can add or delete books.</p>
+</main>
+</body>
+</html>

@@ -1,0 +1,18 @@
+body { font-family: system-ui, sans-serif; background: #f4f2fa; margin: 0; padding: 2rem 1rem; color: #1f1b2e; }
+.card { max-width: 860px; margin: 0 auto; background: #fff; border-radius: 12px; padding: 1.5rem 2rem; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
+.card.narrow { max-width: 380px; }
+.bar { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+.bar form { display: flex; align-items: center; gap: .75rem; }
+h1 { margin: 0 0 1rem; font-size: 1.5rem; color: #5b1fa8; }
+table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid #e6e1f2; }
+label { display: block; margin-bottom: .75rem; font-size: .9rem; }
+input { display: block; width: 100%; padding: .5rem; margin-top: .25rem; border: 1px solid #c9c0e0; border-radius: 6px; box-sizing: border-box; }
+button { background: #7a2fd0; color: #fff; border: 0; border-radius: 6px; padding: .5rem 1rem; cursor: pointer; }
+button.secondary { background: #6b6485; }
+button.danger { background: #c62828; }
+.grid { display: grid; grid-template-columns: 1fr 1fr; gap: .5rem 1rem; align-items: end; }
+.alert { padding: .6rem .8rem; border-radius: 6px; }
+.alert.ok { background: #e6f4ea; color: #1b5e20; }
+.alert.error { background: #fdecea; color: #b71c1c; }
+.hint { color: #6b6485; font-size: .9rem; }
