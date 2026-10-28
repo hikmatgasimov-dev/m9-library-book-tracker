@@ -16,13 +16,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
-         http
+        // CSRF stays enabled for browser forms; REST clients (Basic Auth) and the H2 console are exempt
+        http
                  .csrf(csrf->csrf.ignoringRequestMatchers("/api/**","/h2-console/**"))
-                 .authorizeHttpRequests(auth->
-                         auth.requestMatchers(HttpMethod.GET,"/api/**").authenticated()
-                                 .requestMatchers("/api/**").hasRole("ADMIN")
-                                 .anyRequest().authenticated())
-                 .httpBasic(Customizer.withDefaults())
+                 .authorizeHttpRequests(auth->auth
+                         .requestMatchers("/login","/css/**").permitAll()
+                         //REST API
+                         .requestMatchers(HttpMethod.GET,"/api/**").authenticated()
+                         .requestMatchers("/api/**").hasRole("ADMIN")
+
+                         // Browser UI: reading is for any user, every form submit
+                         .requestMatchers(HttpMethod.POST,"/books/**").hasRole("ADMIN")
+                         .anyRequest().authenticated())
+                .formLogin(form->form.loginPage("/login")
+                        .defaultSuccessUrl("/books",true))
+                .logout(Customizer.withDefaults())
+                .httpBasic(Customizer.withDefaults())
                  .headers(headers -> headers.frameOptions(frame -> frame.sameOrigin()));
 
       return http.build();
